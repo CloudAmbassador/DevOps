@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Install the latest version of Java
+sudo apt update
+sudo apt install -y default-jre default-jdk
+
+# Check if Java was installed successfully
+if ! command -v java &> /dev/null
+then
+    echo "Java installation failed."
+    exit 1
+fi
+# Check the Java version
+java_version=$(java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}')
+echo "Installed Java version: $java_version"
+
+# Check if the installed Java version is lower than 11
+if [[ "$(java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}' | cut -d'.' -f1)" -lt 11 ]]; then
+    echo "An older Java version (lower than 11) is installed."
+else
+    echo "A Java version of 11 or higher was installed."
+fi

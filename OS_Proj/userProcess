@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#Current user
+current_user=$USER
+
+#Get the processes for the current user
+processes=$(ps -u $current_user -o pid,user,%mem,%cpu,command --sort=-%cpu,-%mem)
+
+#Print the processes
+echo "Processes running for user $current_user:"
+echo "$processes"
+
+#User input for sorting
+read -p "Sort by memory (m) or CPU (c) consumption? " sort_by
+
+#Sort the processes based on user input
+if [ "$sort_by" = "m" ]; then
+    processes=$(echo "$processes" | sort -k3 -nr)
+elif [ "$sort_by" = "c" ]; then
+    processes=$(echo "$processes" | sort -k4 -nr)
+else
+    echo "Invalid input. Sorting by default (CPU consumption)."
+    processes=$(echo "$processes" | sort -k4 -nr)
+fi
+
+#Ask for user input about how many processes to print
+read -p "How many processes to print? " num_processes
+
+#Print the sorted list with a limit on the number of processes
+echo "Top $num_processes processes sorted by $sort_by consumption:"
+echo "$processes" | head -n $num_processes
